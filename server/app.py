@@ -41,9 +41,6 @@ def animal_by_id(id):
     else:
         response_body += f'<h1>Zookeeper: {enclosure.environment}'
 
-
-
-
     response = make_response(response_body, 200)
 
     return response
@@ -52,11 +49,47 @@ def animal_by_id(id):
 
 @app.route('/zookeeper/<int:id>')
 def zookeeper_by_id(id):
-    return ''
+    zookeeper = Zookeeper.query.filter(Zookeeper.id == id).first()
+
+    response_body = f'''
+            <h1>ID: {zookeeper.id}</h1>
+            <h1> Name: {zookeeper.name}</h1>
+            <h1> Birthday: {zookeeper.birthday}
+
+    '''
+    animals = zookeeper.animals
+    
+    if not animals:
+        response_body += '<h1>no animals</h1>'
+    else:
+        for animal in animals:
+            response_body += f'<h1>Animal: {animal.name}'
+
+    response = make_response(response_body, 200)
+    return response
+
 
 @app.route('/enclosure/<int:id>')
 def enclosure_by_id(id):
-    return ''
+    
+    enclosure = Enclosure.query.filter(Enclosure.id == id).first()
+
+    response_body = f'''
+            <h1>ID: {enclosure.id} </h1>
+            <h1>Environment {enclosure.environment} </h1>
+            <h1> Open to Visitors {enclosure.open_to_visitors}</h1>
+
+    ''' 
+    enclosed = enclosure.animals
+    if not enclosed:
+        response_body += f"<h1>no animal found</h1>"
+    else:
+        for animal in enclosed:
+            response_body += f'<h1>Animal: {animal.name}</h1>'
+
+    response = make_response(response_body, 200)
+    return response
+    
 
 
 if __name__ == '__main__':
